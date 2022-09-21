@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -147,14 +148,19 @@ func main() {
 
 	http.Handle(*metricsPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(`<html>
+		_, err := w.Write([]byte(`<html>
 			<head><title>Sensor Exporter</title></head>
 			<body>
 			<h1>Sensor Exporter</h1>
 			<p><a href="` + *metricsPath + `">Metrics</a></p>
 			</body>
 			</html>`))
+		if err != nil {
+			log.Println(err)
+		}
 	})
-	http.ListenAndServe(*listenAddress, nil)
 
+	if err := http.ListenAndServe(*listenAddress, nil); err != nil {
+		log.Fatalln("Server forced to shutdown:", err)
+	}
 }
