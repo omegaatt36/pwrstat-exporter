@@ -10,7 +10,7 @@ And make sure the ``pwrstat.service`` has been started: `service pwrstat status`
 
 Install dep.
 ```bash
-git clone https://github.com/kerwenwwer/pwrstat-exporter.git
+git clone https://github.com/omegaatt36/pwrstat-exporter.git
 cd pwrstat-exporter
 go build && mv pwrstat-exporter /usr/local/bin/
 ```

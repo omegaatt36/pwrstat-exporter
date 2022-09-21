@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kerwenwwer/gopwrstat"
+	"github.com/omegaatt36/pwrstat-exporter/gopwrstat"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
