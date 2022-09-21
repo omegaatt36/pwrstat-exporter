@@ -9,16 +9,14 @@ import (
 )
 
 type Pwrstat struct {
-	Content string            `json:"-"`
-	Status  map[string]string `json:"status"`
+	Status map[string]string `json:"status"`
 }
 
 func construct(content string) *Pwrstat {
 	s := &Pwrstat{}
-	s.Content = content
 	s.Status = map[string]string{}
-	lines := strings.Split(s.Content, "\n")
-	//var status string
+
+	lines := strings.Split(content, "\n")
 	var statusArr []string
 	for _, line := range lines {
 		if len(line) > 0 {
@@ -31,9 +29,11 @@ func construct(content string) *Pwrstat {
 			}
 		}
 	}
+
 	for i := 0; i < len(statusArr); i += 2 {
 		s.Status[statusArr[i]] = statusArr[i+1]
 	}
+
 	return s
 }
 
