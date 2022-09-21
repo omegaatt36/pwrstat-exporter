@@ -78,54 +78,57 @@ func (l *PwrstatCollector) Collect(ch chan<- prometheus.Metric) {
 	if err != nil {
 		panic(err)
 	}
-	for k, v := range status.Status {
 
-		if k == "Load" {
+	modelName := status.Status["Model Name"]
+	for k, v := range status.Status {
+		switch k {
+		case "Load":
 			value_arr := strings.Fields(v)
 			if value, err := strconv.ParseFloat(value_arr[0], 64); err == nil {
 				ch <- prometheus.MustNewConstMetric(LoadDesc,
-					prometheus.GaugeValue, value, status.Status["Model Name"])
+					prometheus.GaugeValue, value, modelName)
 			}
-		} else if k == "State" {
+		case "State":
 			var state = 0
 			if v == "Normal" {
 				state = 1
 			}
+
 			ch <- prometheus.MustNewConstMetric(StateDesc,
-				prometheus.GaugeValue, float64(state), status.Status["Model Name"])
-		} else if k == "Battery Capacity" {
+				prometheus.GaugeValue, float64(state), modelName)
+		case "Battery Capacity":
 			value_arr := strings.Fields(v)
 			if value, err := strconv.ParseFloat(value_arr[0], 64); err == nil {
 				ch <- prometheus.MustNewConstMetric(BatteryDesc,
-					prometheus.GaugeValue, value, status.Status["Model Name"])
+					prometheus.GaugeValue, value, modelName)
 			}
-		} else if k == "Remaining Runtime" {
+		case "Remaining Runtime":
 			value_arr := strings.Fields(v)
 			if value, err := strconv.ParseFloat(value_arr[0], 64); err == nil {
 				ch <- prometheus.MustNewConstMetric(RtimeDesc,
-					prometheus.GaugeValue, value, status.Status["Model Name"])
+					prometheus.GaugeValue, value, modelName)
 			}
-		} else if k == "Utility Voltage" {
+		case "Utility Voltage":
 			value_arr := strings.Fields(v)
 			if value, err := strconv.ParseFloat(value_arr[0], 64); err == nil {
 				ch <- prometheus.MustNewConstMetric(InVoltageDesc,
-					prometheus.GaugeValue, value, status.Status["Model Name"])
+					prometheus.GaugeValue, value, modelName)
 			}
-		} else if k == "Output Voltage" {
+		case "Output Voltage":
 			value_arr := strings.Fields(v)
 			if value, err := strconv.ParseFloat(value_arr[0], 64); err == nil {
 				ch <- prometheus.MustNewConstMetric(OutVoltageDesc,
-					prometheus.GaugeValue, value, status.Status["Model Name"])
+					prometheus.GaugeValue, value, modelName)
 			}
-		} else if k == "Test Result" {
+		case "Test Result":
 			value_arr := strings.Fields(v)
+			var result = 0
 			if value_arr[0] == "Passed" {
-				ch <- prometheus.MustNewConstMetric(TestDesc,
-					prometheus.GaugeValue, 1, status.Status["Model Name"])
-			} else {
-				ch <- prometheus.MustNewConstMetric(TestDesc,
-					prometheus.GaugeValue, 0, status.Status["Model Name"])
+				result = 1
 			}
+
+			ch <- prometheus.MustNewConstMetric(TestDesc,
+				prometheus.GaugeValue, float64(result), modelName)
 		}
 	}
 }
